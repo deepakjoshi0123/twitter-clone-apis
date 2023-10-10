@@ -3,6 +3,7 @@
 const db = require("./db.js");
 const { Sequelize } = require("sequelize");
 
+console.log("check.........................................>", db.Host);
 const sequelize = new Sequelize(db.DB, db.USER, db.PASSWORD, {
   host: db.HOST,
   dialect: db.dialect,
