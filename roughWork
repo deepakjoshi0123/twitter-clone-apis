@@ -1,0 +1,5 @@
+//get tweets for timeline
+// SELECT Tweets.id, Tweets.tweet
+//   FROM Tweets
+//   JOIN Follows ON Tweets.userId = Follows.followingId
+//   WHERE Follows.followerId = :followerId;
