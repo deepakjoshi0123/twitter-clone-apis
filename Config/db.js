@@ -1,7 +1,7 @@
 module.exports = {
-  HOST: "192.168.183.100",
-  USER: "root",
-  PASSWORD: "password",
-  DB: "twitter",
-  dialect: "mysql",
+  HOST: process.env.HOST,
+  USER: process.env.USER,
+  PASSWORD: process.env.PASSWORD,
+  DB: process.env.DB,
+  dialect: process.env.DIALECT,
 };

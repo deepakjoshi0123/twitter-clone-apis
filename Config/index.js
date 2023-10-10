@@ -4,9 +4,9 @@ const db = require("./db.js");
 const { Sequelize } = require("sequelize");
 
 console.log("check.........................................>", db.Host);
-const sequelize = new Sequelize(db.DB, db.USER, db.PASSWORD, {
-  host: db.HOST,
-  dialect: db.dialect,
+const sequelize = new Sequelize("twitter", "root", "password", {
+  host: "192.168.183.100",
+  dialect: "mysql",
 });
 
 db.Sequelize = Sequelize;
