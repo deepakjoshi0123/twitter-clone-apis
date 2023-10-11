@@ -10,7 +10,7 @@ class UserService {
   async getUser(userId, res) {
     const existingUser = await user.findOne({
       where: { id: userId },
-      attributes: ["id", "email", "username", "bio", "name"],
+      attributes: ["id", "email", "username", "bio", "name", "phone", "DOB"],
     });
 
     return existingUser ? existingUser : null;
