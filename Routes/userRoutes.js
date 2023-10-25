@@ -12,7 +12,7 @@ const EditProfileValidator = require("../Middlewares/User/validateEditProfile");
 router.get(
   "/user/:user_id",
   validateToken,
-  UserIdValidator.userId(), //same custom class for all
+  UserIdValidator.userId(),
   userController.getUser
 );
 
@@ -26,7 +26,7 @@ router.put(
 
 router.post(
   "/user/:user_id/follow/:follow_user_id",
-  // validateToken,
+  validateToken,
   FollowIdValidator.followId(),
   userController.follow
 );
@@ -40,21 +40,21 @@ router.delete(
 
 router.get(
   "/user/:user_id/followings",
-  // validateToken,
+  validateToken,
   UserIdValidator.userId(),
   userController.getfollowings
 );
 
 router.get(
   "/user/:user_id/followers",
-  // validateToken,
+  validateToken,
   UserIdValidator.userId(),
   userController.getfollowers
 );
 
 router.get(
   "/user/:user_id/recommendation",
-  // validateToken,
+  validateToken,
   UserIdValidator.userId(),
   userController.getUserRecommendation
 );

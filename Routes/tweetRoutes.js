@@ -13,14 +13,10 @@ router.post(
   tweetController.addTweet
 );
 
-router.get(
-  "/user/:user_id/tweets",
-  // validateToken,
-  tweetController.getTweets
-);
+router.get("/user/:user_id/tweets", validateToken, tweetController.getTweets);
 router.get(
   "/user/:user_id/timeline",
-  // validateToken,
+  validateToken,
   tweetController.getTimeline
 );
 
