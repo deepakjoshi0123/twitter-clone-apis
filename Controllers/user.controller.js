@@ -1,10 +1,11 @@
-// code structrue ----> check
-
 const {
   responsedWithSuccess,
   responsedWithSuccessMessage,
   responsedWithErrorMessage,
 } = require("../Response/response");
+
+const FollowingTransformer = require("../Response/Transformer/UserTransformer/FollowingTransformer");
+const FollowerTransformer = require("../Response/Transformer/UserTransformer/FollowerTransformer");
 
 const UserService = require("../Services/userService");
 
@@ -43,13 +44,30 @@ class UserController {
   }
 
   async getfollowings(req, res) {
-    const followings = await UserService.getfollowings(req, res);
-    responsedWithSuccess(res, 200, followings);
+    const followingsRes = await UserService.getfollowings(req);
+
+    const followings = FollowingTransformer.transform(followingsRes.rows);
+
+    responsedWithSuccess(res, 200, {
+      totalCount: followingsRes.count,
+      followings: followings,
+    });
   }
+
   async getfollowers(req, res) {
-    const followers = await UserService.getfollowers(req, res);
-    responsedWithSuccess(res, 200, followers);
+    const followersRes = await UserService.getfollowers(req, res);
+
+    const followers = FollowerTransformer.transform(
+      followersRes.followers.rows,
+      followersRes.followings.rows
+    );
+
+    responsedWithSuccess(res, 200, {
+      totalCount: followersRes.followers.count,
+      followers: followers,
+    });
   }
+
   async getUserRecommendation(req, res) {
     const users = await UserService.getUserRecommendation(req, res);
     responsedWithSuccess(res, 200, users);

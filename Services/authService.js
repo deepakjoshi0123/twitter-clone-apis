@@ -2,9 +2,16 @@ const { user } = require("../Config/index");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const {
+  responsedWithErrorMessage,
+  responsedWithError,
+} = require("../Response/response");
+
+const logger = require("../Log/logger");
+
 class AuthService {
   async registerUser(req) {
-    await user.create({
+    await usr.create({
       name: req.body.name,
       email: req.body.email,
       DOB: req.body.DOB,

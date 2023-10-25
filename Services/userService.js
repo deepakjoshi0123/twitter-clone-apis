@@ -1,11 +1,8 @@
 const { user, follow } = require("../Config/index");
 const { Op } = require("sequelize");
 
-const FollowingTransformer = require("../Response/Transformer/UserTransformer/FollowingTransformer");
-const FollowerTransformer = require("../Response/Transformer/UserTransformer/FollowerTransformer");
 const RecommendationTransformer = require("../Response/Transformer/UserTransformer/RecommendationTransformer");
-//check if can if can update profile in little diff way
-// db constraints
+
 class UserService {
   async getUser(userId, res) {
     const existingUser = await user.findOne({
@@ -31,7 +28,6 @@ class UserService {
 
       return true;
     }
-
     return false;
   }
 
@@ -63,8 +59,8 @@ class UserService {
     return deletedCount > 0 ? true : false;
   }
 
-  async getfollowings(req, res) {
-    const followings = await follow.findAll({
+  async getfollowings(req) {
+    const followings = await follow.findAndCountAll({
       where: {
         followerId: req.params.user_id,
       },
@@ -72,17 +68,16 @@ class UserService {
         {
           model: user, // Include the User model
           as: "following", // Alias for the following relationship
-          // attributes: ["name", "username"], // Specify the attributes to retrieve
         },
       ],
       raw: true,
     });
 
-    return FollowingTransformer.transform(followings);
+    return followings;
   }
 
   async getfollowers(req, res) {
-    const followers = await follow.findAll({
+    const followers = await follow.findAndCountAll({
       where: {
         followingId: req.params.user_id,
       },
@@ -90,21 +85,23 @@ class UserService {
         {
           model: user,
           as: "follower",
-          // attributes: ["name", "username"],
         },
       ],
 
       raw: true,
     });
-    const followings = await this.getfollowings(req, res);
+    const followings = await this.getfollowings(req);
 
-    return FollowerTransformer.transform(followers, followings);
+    return { followers, followings };
   }
 
   async getUserRecommendation(req, res) {
     const followings = await this.getfollowings(req, res);
 
-    const ids = followings.map((following) => following.id);
+    const ids = followings.rows.map((following) => {
+      return following.followingId;
+    });
+
     ids.push(parseInt(req.params.user_id));
 
     const recommendations = await user.findAll({
@@ -121,6 +118,7 @@ class UserService {
   async searchUser(req, res) {
     const searchTerm = req.params.search_query;
 
+    console.log(searchTerm);
     const users = await user.findAll({
       where: {
         [Op.or]: [

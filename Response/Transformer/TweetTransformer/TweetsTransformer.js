@@ -1,7 +1,6 @@
 class TweetsTransformer {
   static transform(tweets) {
-    return tweets.map((tweet) => {
-      console.log(tweet);
+    const timeline = tweets.map((tweet) => {
       return {
         name: tweet["users.name"],
         username: tweet["users.username"],
@@ -9,6 +8,8 @@ class TweetsTransformer {
         tweet: tweet["tweet"],
       };
     });
+
+    return timeline;
   }
 }
 

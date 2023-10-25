@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const timeout = require("connect-timeout");
 const cors = require("cors");
 
 const db = require("./Config/index");
@@ -23,20 +22,15 @@ app.use("/api", tweetRoutes);
 app.use("/api", userRoutes);
 
 app.use(errorGlobalHandler);
-app.use(timeout("5s")); // Set a timeout of 5 seconds
-
-//prominse rejection un handled will not go in this
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at: --> ", promise);
-  console.error("Reason:", reason);
+  const handler = exceptionHandlers[reason.name] || exceptionHandlers.default;
+  handler(reason);
 });
 
 process.on("uncaughtException", (error) => {
-  console.log("check...");
   const handler = exceptionHandlers[error.name] || exceptionHandlers.default;
   handler(error);
-  //send few errors to developer
 });
 
 app.listen(8082, () => {

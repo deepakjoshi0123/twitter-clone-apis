@@ -1,6 +1,6 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 const { user } = require("../../Config/index");
-const { responsedWithError } = require("../../Response/response");
+const ErrorResponse = require("../../Response/errorResponse");
 
 class RegistrationValidator {
   static async emailExists(email) {
@@ -25,6 +25,8 @@ class RegistrationValidator {
         .withMessage(
           "Name should contain at least one letter and may include spaces"
         )
+        .isLength({ min: 7, max: 30 })
+        .withMessage("name must be between 3 and 30 characters long")
         .custom((value) => {
           // Remove spaces and check the length
           const effectiveLength = value.replace(/\s+/g, "").length;
@@ -38,6 +40,8 @@ class RegistrationValidator {
       body("email")
         .isEmail()
         .withMessage("Invalid email address")
+        .isLength({ max: 30 })
+        .withMessage("email should not exceed 30 characters long")
         .custom(async (email, { req }) => {
           if (await RegistrationValidator.emailExists(email, req)) {
             throw new Error("Email already exists");
@@ -48,6 +52,8 @@ class RegistrationValidator {
         .withMessage(
           "Username should contain only letters, numbers, and underscores"
         )
+        .isLength({ min: 3, max: 30 })
+        .withMessage("Username must be between 3 and 30 characters long")
         .custom(async (username, { req }) => {
           if (await RegistrationValidator.usernameExists(username, req)) {
             throw new Error("username already exists");
@@ -58,27 +64,11 @@ class RegistrationValidator {
         .isNumeric()
         .withMessage("Phone must be exactly 10 digits"),
       body("password")
-        .isLength({ min: 6 })
-        .withMessage("Password must be at least 6 characters long"),
-      body("DOB")
-        .optional()
-        .isISO8601()
-        .withMessage("Invalid date format (YYYY-MM-DD)"),
+        .isLength({ min: 6, max: 30 })
+        .withMessage("Password must be between 6 and 30 characters long"),
 
-      RegistrationValidator.handleValidationErrors,
+      ErrorResponse.handleValidationErrors,
     ];
-  }
-
-  // base class for this handleerrors
-  // validation class for custom valiators
-  // keep it in one seprate class
-  static handleValidationErrors(req, res, next) {
-    console.log(req.body.DOB);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return responsedWithError(res, 400, { errors: errors.array() });
-    }
-    next();
   }
 }
 

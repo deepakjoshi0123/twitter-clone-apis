@@ -1,7 +1,6 @@
 const { body, validationResult } = require("express-validator");
-
-const { responsedWithError } = require("../../Response/response");
 const RegistrationValidator = require("../User/validateRegistration");
+const ErrorResponse = require("../../Response/errorResponse");
 
 class EditProfileValidator {
   static EditProfile() {
@@ -34,17 +33,8 @@ class EditProfileValidator {
         .isISO8601()
         .withMessage("Invalid date format (YYYY-MM-DD)"),
 
-      EditProfileValidator.handleValidationErrors,
+      ErrorResponse.handleValidationErrors,
     ];
-  }
-
-  static handleValidationErrors(req, res, next) {
-    console.log("check the req errors  ---> ", validationResult(req));
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return responsedWithError(res, 400, { errors: errors.array() });
-    }
-    next();
   }
 }
 

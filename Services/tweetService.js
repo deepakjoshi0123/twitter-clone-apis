@@ -10,39 +10,50 @@ class TweetService {
     });
   }
 
-  async getTweets(userId, res) {
-    const tweets = await tweet.findAll({
+  async getTweets(req) {
+    let userId = req.params.user_id;
+
+    let queryOptions = {
       where: { userId },
       include: [
         {
-          model: user, // Include the User model
-          as: "users", // Use the correct alias defined in your association
-          attributes: ["username", "name"], // Select the username and name attributes
+          model: user,
+          as: "users",
+          attributes: ["username", "name"],
         },
       ],
+      order: [["createdAt", "DESC"]],
       raw: true,
-    });
-    return TweetsTransformer.transform(tweets);
+    };
+
+    queryOptions = this.applyPagination(queryOptions, req);
+
+    const tweets = await tweet.findAndCountAll(queryOptions);
+    return tweets;
   }
 
-  async getTimeline(followerId) {
-    const followingIds = await this.getFollowingIds(followerId);
+  async getTimeline(req) {
+    const followingIds = await this.getFollowingIds(req.params.user_id);
 
-    const tweets = await tweet.findAll({
+    let queryOptions = {
       where: {
         userId: followingIds.map((item) => item.followingId),
       },
       include: [
         {
-          model: user, // Include the User model
-          as: "users", // Use the correct alias defined in your association
-          attributes: ["username", "name"], // Select the username and name attributes
+          model: user,
+          as: "users",
+          attributes: ["username", "name"],
         },
       ],
+      order: [["createdAt", "DESC"]],
       raw: true,
-    });
+    };
 
-    return TweetsTransformer.transform(tweets);
+    queryOptions = this.applyPagination(queryOptions, req);
+
+    const tweets = await tweet.findAndCountAll(queryOptions);
+    return tweets;
   }
 
   async getFollowingIds(followerId) {
@@ -52,6 +63,24 @@ class TweetService {
       },
       attributes: ["followingId"],
     });
+  }
+
+  applyPagination(queryOptions, req) {
+    if (req.query.limit) {
+      const limit = parseInt(req.query.limit);
+      if (!isNaN(limit) && limit > 0) {
+        queryOptions.limit = limit;
+      }
+    }
+
+    if (req.query.offset) {
+      const offset = parseInt(req.query.offset);
+      if (!isNaN(offset) && offset >= 0) {
+        queryOptions.offset = offset;
+      }
+    }
+
+    return queryOptions;
   }
 }
 

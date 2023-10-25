@@ -1,4 +1,5 @@
 const TweetService = require("../Services/tweetService");
+const TweetsTransformer = require("../Response/Transformer/TweetTransformer/TweetsTransformer");
 
 const {
   responsedWithSuccess,
@@ -12,13 +13,24 @@ class TweetController {
   }
 
   async getTweets(req, res) {
-    const tweets = await TweetService.getTweets(req.params.user_id);
-    responsedWithSuccess(res, 200, tweets);
+    const tweetsRes = await TweetService.getTweets(req);
+
+    const tweets = TweetsTransformer.transform(tweetsRes.rows);
+
+    responsedWithSuccess(res, 200, {
+      totalCount: tweetsRes.count,
+      tweets: tweets,
+    });
   }
 
   async getTimeline(req, res) {
-    const tweets = await TweetService.getTimeline(req.params.user_id);
-    responsedWithSuccess(res, 200, tweets);
+    const tweetsRes = await TweetService.getTimeline(req);
+    const tweets = TweetsTransformer.transform(tweetsRes.rows);
+
+    responsedWithSuccess(res, 200, {
+      totalCount: tweetsRes.count,
+      tweets: tweets,
+    });
   }
 }
 

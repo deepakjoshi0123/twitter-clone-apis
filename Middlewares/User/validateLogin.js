@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const RegistrationValidator = require("../User/validateRegistration");
-const { responsedWithError } = require("../../Response/response");
+const ErrorResponse = require("../../Response/errorResponse");
 
 class LoginValidator {
   static login() {
@@ -13,16 +13,8 @@ class LoginValidator {
             throw new Error("Invalid email ");
           }
         }),
-      LoginValidator.handleValidationErrors,
+      ErrorResponse.handleValidationErrors,
     ];
-  }
-
-  static handleValidationErrors(req, res, next) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      responsedWithError(res, 400, errors.array());
-    }
-    next();
   }
 }
 
