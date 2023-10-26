@@ -11,7 +11,7 @@ const logger = require("../Log/logger");
 
 class AuthService {
   async registerUser(req) {
-    await usr.create({
+    await user.create({
       name: req.body.name,
       email: req.body.email,
       DOB: req.body.DOB,
