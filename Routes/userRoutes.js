@@ -18,7 +18,7 @@ router.get(
 
 router.put(
   "/user/:user_id",
-  validateToken,
+  // validateToken,
   UserIdValidator.userId(),
   EditProfileValidator.EditProfile(),
   userController.updateProfile

@@ -31,7 +31,17 @@ class EditProfileValidator {
       body("DOB")
         .optional()
         .isISO8601()
-        .withMessage("Invalid date format (YYYY-MM-DD)"),
+        .withMessage("Invalid date format (YYYY-MM-DD)")
+        .custom((value) => {
+          const dob = new Date(value);
+          const currentDate = new Date();
+          const minDate = new Date("1950-01-01");
+
+          if (dob < minDate || dob > currentDate) {
+            throw new Error("DOB must be between 1950-01-01 and today.");
+          }
+          return true;
+        }),
 
       ErrorResponse.handleValidationErrors,
     ];

@@ -26,7 +26,7 @@ class RegistrationValidator {
           "Name should contain at least one letter and may include spaces"
         )
         .isLength({ min: 7, max: 30 })
-        .withMessage("name must be between 3 and 30 characters long")
+        .withMessage("name must be between 7 and 30 characters long")
         .custom((value) => {
           // Remove spaces and check the length
           const effectiveLength = value.replace(/\s+/g, "").length;
