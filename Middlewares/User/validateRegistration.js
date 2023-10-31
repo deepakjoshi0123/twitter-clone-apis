@@ -21,10 +21,8 @@ class RegistrationValidator {
   static registration() {
     return [
       body("name")
-        .matches(/[a-zA-Z]+(\s+[a-zA-Z]+)*/)
-        .withMessage(
-          "Name should contain at least one letter and may include spaces"
-        )
+        .matches(/^[a-zA-Z ]+$/)
+        .withMessage("Name should contain letter only spaces only")
         .isLength({ min: 7, max: 30 })
         .withMessage("name must be between 7 and 30 characters long")
         .custom((value) => {
