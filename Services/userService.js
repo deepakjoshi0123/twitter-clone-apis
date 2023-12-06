@@ -1,12 +1,14 @@
 const { user, follow } = require("../Config/index");
 const { Op } = require("sequelize");
 
+const BaseService = require("./baseService");
+
 const RecommendationTransformer = require("../Response/Transformer/UserTransformer/RecommendationTransformer");
 
 class UserService {
   async getUser(userId, res) {
     const existingUser = await user.findOne({
-      where: { id: userId },
+      where: { id: BaseService.id(req) },
       attributes: ["id", "email", "username", "bio", "name", "phone", "DOB"],
     });
 
@@ -16,7 +18,7 @@ class UserService {
   async updateProfile(req, res) {
     const { username, bio, phone, DOB } = req.body;
 
-    const existingUser = await user.findByPk(req.params.user_id);
+    const existingUser = await user.findByPk(BaseService.id(req));
 
     if (existingUser) {
       existingUser.bio = bio ? bio : existingUser.bio;
@@ -32,7 +34,7 @@ class UserService {
   }
 
   async follow(req, res) {
-    const followerId = req.params.user_id;
+    const followerId = BaseService.id(req);
     const followingId = req.params.follow_user_id;
 
     const [fol, created] = await follow.findOrCreate({
@@ -46,7 +48,7 @@ class UserService {
   }
 
   async unFollow(req, res) {
-    const followerId = req.params.user_id;
+    const followerId = BaseService.id(req);
     const followingId = req.params.unfollowed_user_id;
 
     const deletedCount = await follow.destroy({
@@ -62,7 +64,7 @@ class UserService {
   async getfollowings(req) {
     const followings = await follow.findAndCountAll({
       where: {
-        followerId: req.params.user_id,
+        followerId: BaseService.id(req),
       },
       include: [
         {
@@ -102,7 +104,7 @@ class UserService {
       return following.followingId;
     });
 
-    ids.push(parseInt(req.params.user_id));
+    ids.push(parseInt(BaseService.id(req)));
 
     const recommendations = await user.findAll({
       where: {

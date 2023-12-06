@@ -8,8 +8,7 @@ const userRoutes = require("./Routes/userRoutes");
 const tweetRoutes = require("./Routes/tweetRoutes");
 const authRoutes = require("./Routes/authRoutes");
 const exceptionHandlers = require("./Exception/exceptionHandlers");
-
-const errorGlobalHandler = require("./Middlewares/Error/errorHandler");
+const errorHandler = require("./Middlewares/errorHandler");
 
 const app = express();
 db.sequelize.sync();
@@ -21,7 +20,7 @@ app.use("/api", authRoutes);
 app.use("/api", tweetRoutes);
 app.use("/api", userRoutes);
 
-app.use(errorGlobalHandler);
+app.use(errorHandler.handle.bind(errorHandler));
 
 process.on("unhandledRejection", (reason, promise) => {
   const handler = exceptionHandlers[reason.name] || exceptionHandlers.default;
@@ -34,5 +33,5 @@ process.on("uncaughtException", (error) => {
 });
 
 app.listen(8082, () => {
-  console.log("server runnnnig at 8082");
+  console.log("server runnnnig at 890");
 });

@@ -2,21 +2,27 @@ const express = require("express");
 const router = express.Router();
 const tweetController = require("../Controllers/tweet.controller");
 
-const validateToken = require("../Middlewares/Auth/jwtMiddleware");
+const validateRequest = require("../Middlewares/validateRequest.js");
 
-const TweetValidator = require("../Middlewares/Tweet/validateTweet");
+const validateToken = require("../Middlewares/Auth/jwtMiddleware");
+const CreateTweetSchema = require("../Schemas/Tweets/createTweet.js");
+
+const expressValidator = require("../Bootstrap/expressValidator.js");
+const checkSchema = expressValidator.checkSchema;
 
 router.post(
-  "/user/:user_id/tweet",
-  validateToken,
-  TweetValidator.tweet(),
+  "/user/tweet",
+  // validateToken,
+  checkSchema(CreateTweetSchema),
+  validateRequest,
   tweetController.addTweet
 );
 
-router.get("/user/:user_id/tweets", validateToken, tweetController.getTweets);
+router.get("/user/tweets", validateToken, tweetController.getTweets);
 router.get(
-  "/user/:user_id/timeline",
-  validateToken,
+  "/user/timeline",
+  // validateToken,
+  validateRequest,
   tweetController.getTimeline
 );
 

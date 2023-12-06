@@ -1,5 +1,5 @@
 const logger = require("../Log/logger");
-const mailer = require("../Mail/config");
+const mailer = require("../Mail/sendErrorMail");
 
 module.exports = {
   TypeError: (error) => {

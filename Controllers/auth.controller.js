@@ -1,4 +1,5 @@
 const AuthService = require("../Services/authService");
+const ApplicationError = require("../Error/AppError");
 
 const {
   responsedWithSuccess,
@@ -23,6 +24,7 @@ class AuthController {
         ? responsedWithSuccess(res, 200, token)
         : responsedWithErrorMessage(res, 401, "Authentication failed");
     } catch (error) {
+      console.log(error);
       next(req, res, error);
     }
   }

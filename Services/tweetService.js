@@ -1,17 +1,19 @@
 const { tweet, follow, user } = require("../Config/index");
 
+const BaseService = require("./baseService");
 const TweetsTransformer = require("../Response/Transformer/TweetTransformer/TweetsTransformer");
 
 class TweetService {
+  constructor() {}
   async addTweet(req) {
     await tweet.create({
-      userId: req.params.user_id,
+      userId: BaseService.id(req),
       tweet: req.body.tweet,
     });
   }
 
   async getTweets(req) {
-    let userId = req.params.user_id;
+    let userId = BaseService.id(req);
 
     let queryOptions = {
       where: { userId },
@@ -33,7 +35,7 @@ class TweetService {
   }
 
   async getTimeline(req) {
-    const followingIds = await this.getFollowingIds(req.params.user_id);
+    const followingIds = await this.getFollowingIds(BaseService.id(req));
 
     let queryOptions = {
       where: {

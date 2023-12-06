@@ -24,15 +24,26 @@ class AuthService {
     const { email, password } = req.body;
 
     const existingUser = await user.findOne({ where: { email } });
-    const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
-    return passwordMatch ? this.getJwt(existingUser) : null;
+    if (existingUser == null) {
+      throw Error("User with this email not found");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, existingUser.password);
+    if (passwordMatch) {
+      return this.getJwt(existingUser);
+    }
+    throw Error("UnAuthorised");
   }
 
   async getJwt(user) {
-    return jwt.sign({ user }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_SECRET_EXPIRY,
-    });
+    return jwt.sign(
+      { id: user.id, username: user.username, name: user.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_SECRET_EXPIRY,
+      }
+    );
   }
 }
 

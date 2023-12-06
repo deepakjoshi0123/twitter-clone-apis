@@ -1,5 +1,5 @@
-const { responsedWithErrorMessage } = require("../../Response/response");
-const mailer = require("../../Mail/config");
+const { responsedWithErrorMessage } = require("../Response/response");
+const mailer = require("../Mail/sendErrorMail");
 
 function errorHandler(err, req, res, next) {
   new mailer().sendEmail({
@@ -11,7 +11,7 @@ function errorHandler(err, req, res, next) {
     stack: err.stack,
     timestamp: err.timestamp,
   });
-
+  // console.log("check error ---------", err);
   responsedWithErrorMessage(res, 500, "Internal Server Error");
 }
 

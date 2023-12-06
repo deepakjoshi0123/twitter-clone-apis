@@ -3,10 +3,10 @@ const { user } = require("../../Config/index");
 const ErrorResponse = require("../../Response/errorResponse");
 
 class RegistrationValidator {
-  static async emailExists(email) {
-    const existingUser = await user.findOne({ where: { email } });
-    return existingUser !== null;
-  }
+  // static async emailExists(email) {
+  //   const existingUser = await user.findOne({ where: { email } });
+  //   return existingUser !== null;
+  // }
 
   static async usernameExists(username, id) {
     const existingUsername = await user.findOne({ where: { username } });
@@ -39,12 +39,8 @@ class RegistrationValidator {
         .isEmail()
         .withMessage("Invalid email address")
         .isLength({ max: 30 })
-        .withMessage("email should not exceed 30 characters long")
-        .custom(async (email, { req }) => {
-          if (await RegistrationValidator.emailExists(email, req)) {
-            throw new Error("Email already exists");
-          }
-        }),
+        .withMessage("email should not exceed 30 characters long"),
+
       body("username")
         .matches(/^[a-zA-Z0-9_]+$/)
         .withMessage(

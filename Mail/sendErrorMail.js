@@ -1,24 +1,12 @@
-const nodemailer = require("nodemailer");
+const transporter = require("./mailTransporter");
 
-class EmailSender {
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: process.env.MAIL_PORT,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASSWORD,
-      },
-    });
-  }
-
-  async sendEmail(content) {
-    const mailOptions = {
-      from: "clonned-twitter.@twitter.com",
-      to: "deepakjoshi0123@gmail.com",
-      subject: `Error occurred - ${content.message}`,
-      text: "<h1>check upcoming error mail</h1>",
-      html: `
+const sendEmail = async (content) => {
+  const mailOptions = {
+    from: "clonned-twitter.@twitter.com",
+    to: "deepakjoshi0123@gmail.com",
+    subject: `Error occurred - ${content.message}`,
+    text: "<h1>check upcoming error mail</h1>",
+    html: `
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
@@ -65,10 +53,9 @@ class EmailSender {
         </body>
       </html>
       `,
-    };
+  };
 
-    console.log(await this.transporter.sendMail(mailOptions));
-  }
-}
+  await this.transporter.sendMail(mailOptions);
+};
 
-module.exports = EmailSender;
+module.exports = sendEmail;
