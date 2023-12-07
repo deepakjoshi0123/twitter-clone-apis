@@ -7,8 +7,11 @@ const db = require("./Config/index");
 const userRoutes = require("./Routes/userRoutes");
 const tweetRoutes = require("./Routes/tweetRoutes");
 const authRoutes = require("./Routes/authRoutes");
-const exceptionHandlers = require("./Exception/exceptionHandlers");
+
+const ApplicationError = require("./Error/ApplicationError");
+
 const errorHandler = require("./Middlewares/errorHandler");
+// const errorGlobalHandler = require("./Middlewares/Error/errorHandler");
 
 const app = express();
 db.sequelize.sync();
@@ -23,13 +26,15 @@ app.use("/api", userRoutes);
 app.use(errorHandler.handle.bind(errorHandler));
 
 process.on("unhandledRejection", (reason, promise) => {
-  const handler = exceptionHandlers[reason.name] || exceptionHandlers.default;
-  handler(reason);
+  errorHandler.handleUncaughtRejection(
+    reason,
+    promise,
+    new ApplicationError("Unhandled promise rejection encountered", 500)
+  );
 });
 
 process.on("uncaughtException", (error) => {
-  const handler = exceptionHandlers[error.name] || exceptionHandlers.default;
-  handler(error);
+  errorHandler.handleUncaught(error);
 });
 
 app.listen(8082, () => {

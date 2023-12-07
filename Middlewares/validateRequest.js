@@ -6,9 +6,9 @@ var validateRequest = function (req, res, next) {
     return next();
   }
 
-  var response = {};
-  for (var i = 0, a = errors.array(); i < a.length; i++) {
-    var error = a[i];
+  const response = {};
+
+  for (let error of errors.array()) {
     if ("path" in error) {
       if (error.path in response) {
         response[error.path]["messages"].push(error.msg);
@@ -21,6 +21,7 @@ var validateRequest = function (req, res, next) {
         };
       }
     } else {
+      // validation errors which are not of type FieldValidationError
       if ("others" in response) {
         response["others"].push(error.msg);
       } else {

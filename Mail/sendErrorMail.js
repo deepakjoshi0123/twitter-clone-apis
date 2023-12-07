@@ -4,7 +4,7 @@ const sendEmail = async (content) => {
   const mailOptions = {
     from: "clonned-twitter.@twitter.com",
     to: "deepakjoshi0123@gmail.com",
-    subject: `Error occurred - ${content.message}`,
+    subject: `${content.name}`,
     text: "<h1>check upcoming error mail</h1>",
     html: `
       <html lang="en">
@@ -55,7 +55,7 @@ const sendEmail = async (content) => {
       `,
   };
 
-  await this.transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
 
 module.exports = sendEmail;

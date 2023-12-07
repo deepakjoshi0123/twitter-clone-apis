@@ -1,3 +1,5 @@
+const { isUsernameExists } = require("../../Validators/isUserNameExists");
+
 const UpdateUserSchema = {
   username: {
     in: ["body"],
@@ -5,10 +7,11 @@ const UpdateUserSchema = {
       options: { nullable: true },
     },
     isLength: {
-      options: { min: 2, max: 64 },
-      errorMessage: "The username field must have length between 3 to 15 chars",
+      options: { min: 5, max: 15 },
+      errorMessage: "The username field must have length between 5 to 15 chars",
     },
-    isUserNameExists: true,
+
+    isUsernameExists: true,
   },
 
   bio: {

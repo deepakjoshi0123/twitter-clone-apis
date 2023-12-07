@@ -37,7 +37,6 @@ module.exports = (sequelize) => {
     {
       indexes: [
         {
-          unique: true, // Ensures uniqueness of the index
           fields: ["name"],
         },
         {

@@ -13,7 +13,7 @@ function validateToken(req, res, next) {
       return res.status(403).json({ message: "Failed to authenticate token" });
     }
 
-    req.user = decoded; // just kept this data if it's needed later
+    // req.user = decoded; // just kept this data if it's needed later
 
     // Continue to the next middleware or route handler
     next();

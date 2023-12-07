@@ -1,20 +1,24 @@
 const { user } = require("../Config/index");
-const jwt = require("jsonwebtoken");
-const BaseService = require("../Services/baseService");
-const expressValidator = require("express-validator");
-const Meta = expressValidator.Meta;
 
-const isUsernameExists = async (username) => {
-  //check it ...
+const BaseService = require("../Services/baseService");
+
+const isUsernameExists = async (username, Meta) => {
   const existingUsername = await user.findOne({ where: { username } });
 
-  if (existingUsername && existingUsername.id !== BaseService.id()) {
+  if (existingUsername && existingUsername.id !== BaseService.id(Meta.req)) {
     throw Error("username already in use");
-  } else if (existingUsername) {
+  }
+  return existingUsername !== null;
+};
+
+const isUsernameAvailable = async (username) => {
+  const existingUsername = await user.findOne({ where: { username } });
+
+  if (existingUsername) {
     throw Error("username already in use");
   }
 
   return existingUsername !== null;
 };
 
-module.exports = isUsernameExists;
+module.exports = { isUsernameExists, isUsernameAvailable };

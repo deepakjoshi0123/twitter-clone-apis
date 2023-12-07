@@ -5,13 +5,13 @@ const RegisterUserSchema = {
       options: {
         checkNull: true,
       },
-      errorMessage: "The username field is required from schema --",
+      errorMessage: "The username field is required ",
     },
     isLength: {
-      options: { min: 2, max: 64 },
-      errorMessage:
-        "The username field must have length between 2 and 64 characters-----",
+      options: { min: 5, max: 15 },
+      errorMessage: "The username field must have length between 5 and 15 ",
     },
+    isUsernameAvailable: true,
   },
 
   password: {

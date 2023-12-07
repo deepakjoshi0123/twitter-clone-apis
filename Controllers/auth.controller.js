@@ -1,17 +1,14 @@
 const AuthService = require("../Services/authService");
-const ApplicationError = require("../Error/AppError");
-
-const {
-  responsedWithSuccess,
-  responsedWithSuccessMessage,
-  responsedWithErrorMessage,
-} = require("../Response/response");
 
 class AuthController {
+  //unahandled rejection for sequelise dublicate entry for name
   async registerUser(req, res, next) {
     try {
       await AuthService.registerUser(req);
-      responsedWithSuccessMessage(res, 200, "User registered successfully");
+      return res.status(200).json({
+        status: 200,
+        message: "user registered successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -20,12 +17,12 @@ class AuthController {
   async login(req, res, next) {
     try {
       const token = await AuthService.login(req, res);
-      token
-        ? responsedWithSuccess(res, 200, token)
-        : responsedWithErrorMessage(res, 401, "Authentication failed");
+      return res.status(200).json({
+        status: 200,
+        data: token,
+      });
     } catch (error) {
-      console.log(error);
-      next(req, res, error);
+      next(error);
     }
   }
 }

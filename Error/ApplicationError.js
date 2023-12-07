@@ -1,8 +1,8 @@
-class AppError extends Error {
+class ApplicationError extends Error {
   constructor(message, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
-    console.log(message);
+    console.log(this.constructor.name);
   }
 
   get name() {
@@ -10,7 +10,7 @@ class AppError extends Error {
   }
 
   render(req, res) {
-    console.log("check... me ", this.messages);
+    // console.log("check... me ", this.messages);
     return res.status(this.statusCode).json({
       statusCode: this.statusCode,
       error: this.name,
@@ -21,4 +21,4 @@ class AppError extends Error {
   report(req) {}
 }
 
-module.exports = AppError;
+module.exports = ApplicationError;

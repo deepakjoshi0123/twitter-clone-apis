@@ -2,16 +2,13 @@ const { user } = require("../Config/index");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const {
-  responsedWithErrorMessage,
-  responsedWithError,
-} = require("../Response/response");
+const AuthenticationError = require("../Error/AuthenticationError");
 
-const logger = require("../Log/logger");
+const logger = require("../Log/logger"); // use this
 
 class AuthService {
   async registerUser(req) {
-    await user.create({
+    return await user.create({
       name: req.body.name,
       email: req.body.email,
       DOB: req.body.DOB,
@@ -26,14 +23,14 @@ class AuthService {
     const existingUser = await user.findOne({ where: { email } });
 
     if (existingUser == null) {
-      throw Error("User with this email not found");
+      throw new AuthenticationError("User with this email not found", 404);
     }
 
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (passwordMatch) {
       return this.getJwt(existingUser);
     }
-    throw Error("UnAuthorised");
+    throw new AuthenticationError("UnAuthorised", 401);
   }
 
   async getJwt(user) {

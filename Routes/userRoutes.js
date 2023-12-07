@@ -4,26 +4,21 @@ const userController = require("../Controllers/user.controller");
 const validateRequest = require("../Middlewares/validateRequest.js");
 
 const validateToken = require("../Middlewares/Auth/jwtMiddleware");
-const UserIdValidator = require("../Middlewares/User/validateUserId");
-const FollowIdValidator = require("../Middlewares/User/validateFollowId");
-
-const UnfollowIdValidator = require("../Middlewares/User/validateUnfollowId");
-const EditProfileValidator = require("../Middlewares/User/validateEditProfile");
 
 const UpdateUserSchema = require("../Schemas/Users/updateUser.js");
-
+const userIdSchema = require("../Schemas/Users/userId.js");
 const expressValidator = require("../Bootstrap/expressValidator.js");
 const checkSchema = expressValidator.checkSchema;
 
 router.get(
-  "/user/:user_id",
+  "/user/:userId",
   validateToken,
-  UserIdValidator.userId(),
+  validateRequest,
   userController.getUser
 );
 
 router.put(
-  "/user/:user_id",
+  "/user/:userId",
   // validateToken,
   checkSchema(UpdateUserSchema),
   validateRequest,
@@ -31,44 +26,50 @@ router.put(
 );
 
 router.post(
-  "/user/:user_id/follow/:follow_user_id",
+  "/user/:userId/follow/:follow_user_id",
   // validateToken,
-  FollowIdValidator.followId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.follow
 );
 
 router.delete(
-  "/user/:user_id/unfollow/:unfollowed_user_id",
+  "/user/:userId/unfollow/:unfollowed_user_id",
   // validateToken,
-  UnfollowIdValidator.unfollowId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.unFollow
 );
 
 router.get(
-  "/user/:user_id/followings",
+  "/user/:userId/followings",
   // validateToken,
-  UserIdValidator.userId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.getfollowings
 );
 
 router.get(
-  "/user/:user_id/followers",
+  "/user/:userId/followers",
   // validateToken,
-  UserIdValidator.userId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.getfollowers
 );
 
 router.get(
-  "/user/:user_id/recommendation",
+  "/user/:userId/recommendation",
   // validateToken,
-  UserIdValidator.userId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.getUserRecommendation
 );
 
 router.get(
-  "/user/:user_id/search/:search_query",
+  "/user/:userId/search/:search_query",
   // validateToken,
-  UserIdValidator.userId(),
+  checkSchema(userIdSchema),
+  validateRequest,
   userController.searchUser
 );
 

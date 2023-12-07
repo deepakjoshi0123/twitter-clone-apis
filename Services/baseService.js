@@ -1,17 +1,18 @@
 var jwt = require("jsonwebtoken");
+const AuthencationError = require("../Error/AuthenticationError");
 
 class BaseService {
   id(req) {
     var token = req.headers.authorization || "";
     token = token.replace("Bearer", "").trim() || "";
 
-    var decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (decoded && decoded.id) {
       return decoded.id;
     }
 
-    throw new Error("Unauthorized", 401);
+    throw new AuthencationError("Unauthorized", 401);
   }
 }
 

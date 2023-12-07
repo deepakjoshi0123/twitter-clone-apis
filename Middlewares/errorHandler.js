@@ -1,10 +1,11 @@
-const ApplicationError = require("../Error/AuthError");
+const ApplicationError = require("../Error/ApplicationError");
+const sendErrorMail = require("../Mail/sendErrorMail");
 
 class ErrorHandler {
   dontReport = [];
 
   handle(err, req, res, next) {
-    console.log("check error ---", err);
+    sendErrorMail(err);
     if (err instanceof ApplicationError) {
       err.render(req, res);
       if (!this.dontReport.includes(err.name)) {
@@ -18,7 +19,7 @@ class ErrorHandler {
 
   handleUncaught(err) {
     // Logger.error('uncaught error', { message: err.message, trace: err.stack });
-
+    console.log("uncaught exception ---", err);
     process.exit(1);
   }
 
@@ -30,13 +31,12 @@ class ErrorHandler {
     //   promise: promise,
     // });
 
-    // it is considered a good practice to exit the server on any uncaught errors
-    // the process manager must make sure to restart the process after this
-    process.exit(1);
+    // process.exit(1);
+    console.log("unhangle rejection ---", reason, promise, err);
   }
 
   render(err, req, res) {
-    console.log("check me error -------------------------------", err.name);
+    console.log("check me error -------------------------------", err);
     return res.status(500).json({
       statusCode: 500,
       error: err.name || "InternalServerError",

@@ -1,4 +1,4 @@
-const ApplicationError = require("./AppError");
+const ApplicationError = require("./ApplicationError");
 
 class AuthenticationError extends ApplicationError {}
 
